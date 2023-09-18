@@ -30,6 +30,7 @@ func (k msgServer) AddStatusUpdate(goCtx context.Context, msg *types.MsgAddStatu
 	// Avoid log spamming
 	_, ok := os.LookupEnv(cPigeonStatusUpdateFF)
 	if !ok {
+		k.Logger(ctx).Info("pigeon-status-update: no env")
 		return &types.EmptyResponse{}, nil
 	}
 
@@ -37,6 +38,7 @@ func (k msgServer) AddStatusUpdate(goCtx context.Context, msg *types.MsgAddStatu
 	valAddr := sdk.ValAddress(creator.Bytes())
 	status := msg.GetStatus()
 
+	k.Logger(ctx).Info("pigeon-status-update: pre log")
 	var logFn func(string, ...interface{})
 	switch msg.Level {
 	case types.MsgAddStatusUpdate_LEVEL_ERROR:
@@ -48,6 +50,7 @@ func (k msgServer) AddStatusUpdate(goCtx context.Context, msg *types.MsgAddStatu
 		logFn = k.Logger(ctx).Debug
 	}
 
+	k.Logger(ctx).Info("pigeon-status-update: logging")
 	logFn(status,
 		"component", "pigeon-status-update",
 		"status", status,
