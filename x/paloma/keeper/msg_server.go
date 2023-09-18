@@ -25,6 +25,8 @@ var _ types.MsgServer = msgServer{}
 func (k msgServer) AddStatusUpdate(goCtx context.Context, msg *types.MsgAddStatusUpdate) (*types.EmptyResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	k.Logger(ctx).Info("pigeon-status-update: received call")
+
 	// Avoid log spamming
 	_, ok := os.LookupEnv(cPigeonStatusUpdateFF)
 	if !ok {
@@ -37,12 +39,13 @@ func (k msgServer) AddStatusUpdate(goCtx context.Context, msg *types.MsgAddStatu
 
 	var logFn func(string, ...interface{})
 	switch msg.Level {
-	case types.MsgAddStatusUpdate_LEVEL_DEBUG:
-		logFn = k.Logger(ctx).Debug
-	case types.MsgAddStatusUpdate_LEVEL_INFO:
-		logFn = k.Logger(ctx).Info
 	case types.MsgAddStatusUpdate_LEVEL_ERROR:
 		logFn = k.Logger(ctx).Error
+	case types.MsgAddStatusUpdate_LEVEL_INFO:
+		logFn = k.Logger(ctx).Info
+	case types.MsgAddStatusUpdate_LEVEL_DEBUG:
+	default:
+		logFn = k.Logger(ctx).Debug
 	}
 
 	logFn(status,
