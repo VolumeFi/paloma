@@ -23,6 +23,12 @@ func TestApplyForcedConfigOptions(t *testing.T) {
 		result := server.GetServerContextFromCmd(&cmd)
 
 		// Assert each thing we tried to set
-		require.Equal(t, 1*time.Second, result.Config.Consensus.TimeoutCommit)
+		require.Equal(t, 200*time.Millisecond, result.Config.Consensus.TimeoutCommit)
+		require.Equal(t, 200*time.Millisecond, result.Config.Consensus.TimeoutPrecommit)
+		require.Equal(t, 200*time.Millisecond, result.Config.Consensus.TimeoutPrevote)
+		require.Equal(t, 200*time.Millisecond, result.Config.Consensus.TimeoutPropose)
+		require.Equal(t, 50*time.Millisecond, result.Config.Consensus.TimeoutPrecommitDelta)
+		require.Equal(t, 50*time.Millisecond, result.Config.Consensus.TimeoutPrevoteDelta)
+		require.Equal(t, 50*time.Millisecond, result.Config.Consensus.TimeoutProposeDelta)
 	})
 }

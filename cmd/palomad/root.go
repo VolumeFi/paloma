@@ -188,7 +188,13 @@ func isRunningAgainstLocalNode(nodeURI string) bool {
 // applyForcedConfigOptions reads in the serverContext, applies config to it, and then applies it
 func applyForcedConfigOptions(cmd *cobra.Command) error {
 	serverCtx := server.GetServerContextFromCmd(cmd)
-	serverCtx.Config.Consensus.TimeoutCommit = 1 * time.Second
+	serverCtx.Config.Consensus.TimeoutCommit = 200 * time.Millisecond
+	serverCtx.Config.Consensus.TimeoutPrecommit = 200 * time.Millisecond
+	serverCtx.Config.Consensus.TimeoutPrevote = 200 * time.Millisecond
+	serverCtx.Config.Consensus.TimeoutPropose = 200 * time.Millisecond
+	serverCtx.Config.Consensus.TimeoutPrecommitDelta = 50 * time.Millisecond
+	serverCtx.Config.Consensus.TimeoutPrevoteDelta = 50 * time.Millisecond
+	serverCtx.Config.Consensus.TimeoutProposeDelta = 50 * time.Millisecond
 	return server.SetCmdServerContext(cmd, serverCtx)
 }
 
