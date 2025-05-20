@@ -182,9 +182,9 @@ func (k Keeper) processAttestation(goCtx context.Context, att *types.Attestation
 		// execute with a transient storage
 		// If the attestation fails, something has gone wrong and we can't recover it. Log and move on
 		// The attestation will still be marked "Observed", allowing the oracle to progress properly
-		hash, err := claim.ClaimHash()
-		if err != nil {
-			return fmt.Errorf("processAttestation: unable to compute claim hash: %w", err)
+		hash, hErr := claim.ClaimHash()
+		if hErr != nil {
+			return fmt.Errorf("processAttestation: unable to compute claim hash: %w, original error: %w", hErr, err)
 		}
 
 		liblog.FromKeeper(ctx, k).
