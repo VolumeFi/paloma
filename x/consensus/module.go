@@ -177,7 +177,7 @@ func (am AppModule) BeginBlock(context.Context) error {
 // returns no validator updates.
 func (am AppModule) EndBlock(ct context.Context) error {
 	ctx := sdk.UnwrapSDKContext(ct)
-	am.keeper.Logger(ctx).Info("abci-validator-size", abci.ValidatorUpdates{}.Len())
+	am.keeper.Logger(ctx).Debug("abci-validator-size", "size", abci.ValidatorUpdates{}.Len())
 	if err := am.keeper.CheckAndProcessEstimatedMessages(ctx); err != nil {
 		am.keeper.Logger(ctx).Error("error while estimating to messages", "err", err)
 	}

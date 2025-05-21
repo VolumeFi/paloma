@@ -142,7 +142,7 @@ func (k Keeper) TryDeployingLastCompassContractToAllChains(ctx context.Context) 
 		)
 		return
 	}
-	k.Logger(ctx).Info("trying to deploy smart contract to all chains",
+	k.Logger(ctx).Debug("trying to deploy smart contract to all chains",
 		"smart-contract-id", smartContract.GetId(),
 	)
 }
@@ -400,7 +400,7 @@ func (k Keeper) tryDeployingSmartContractToAllChains(ctx context.Context, smartC
 		return err
 	}
 	for _, chainInfo := range chainInfos {
-		k.Logger(ctx).Info("trying to deploy smart contract to EVM chain", "smart-contract-id", smartContract.GetId(), "chain-reference-id", chainInfo.GetChainReferenceID())
+		k.Logger(ctx).Debug("trying to deploy smart contract to EVM chain", "smart-contract-id", smartContract.GetId(), "chain-reference-id", chainInfo.GetChainReferenceID())
 		if k.HasAnySmartContractDeployment(ctx, chainInfo.GetChainReferenceID()) {
 			continue
 		}

@@ -88,6 +88,17 @@ func (k Keeper) Attest(
 			return nil, err
 		}
 
+		liblog.FromKeeper(ctx, k).
+			WithComponent("skway.keeper.Attest").
+			WithChain(claim.GetChainReferenceId()).
+			WithFields(
+				"skyway-nonce", claim.GetSkywayNonce(),
+				"claim-hash", hash,
+				"claim-type", claim.GetType().String(),
+				"eth-block-height", claim.GetEthBlockHeight(),
+			).
+			Debug("Skyway claim attested.")
+
 		return att, nil
 	} else {
 		return nil, fmt.Errorf("invalid height - this claim's height is %v while the stored height is %v", claim.GetEthBlockHeight(), ethClaim.GetEthBlockHeight())

@@ -7,12 +7,18 @@ import (
 	"fmt"
 
 	"github.com/cosmos/cosmos-sdk/codec/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	consensustypes "github.com/palomachain/paloma/v2/x/consensus/types"
 	evmtypes "github.com/palomachain/paloma/v2/x/evm/types"
+	valsettypes "github.com/palomachain/paloma/v2/x/valset/types"
 )
 
 type Envelope interface {
 	GetMsg() *types.Any
+}
+
+type Metadataer interface {
+	GetMetadata() valsettypes.MsgMetadata
 }
 
 type ConsensusMsgProvider interface {
@@ -40,4 +46,12 @@ func GetAssignee(e Envelope, cdc types.AnyUnpacker) (string, error) {
 	}
 
 	return unpackedMsg.GetAssignee(), nil
+}
+
+func GetSender(msg sdk.Msg) (string, bool) {
+	m, ok := msg.(Metadataer)
+	if !ok {
+		return "", false
+	}
+	return m.GetMetadata().Creator, true
 }
