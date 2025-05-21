@@ -145,7 +145,10 @@ func (k Keeper) SetParams(ctx context.Context, params types.Params) {
 // Logger returns a module-specific Logger.
 func (k Keeper) Logger(ctx context.Context) log.Logger {
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
-	return liblog.FromSDKLogger(sdkCtx.Logger()).With("module", fmt.Sprintf("x/%s", types.ModuleName))
+	return liblog.FromSDKLogger(sdkCtx.Logger()).With(
+		"module", fmt.Sprintf("x/%s", types.ModuleName),
+		"height", sdkCtx.BlockHeight(),
+	)
 }
 
 func (k Keeper) UnpackAttestationClaim(att *types.Attestation) (types.EthereumClaim, error) {

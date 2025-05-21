@@ -18,6 +18,7 @@ const updateValidatorNoncesPeriod = 50
 
 // EndBlocker is called at the end of every block
 func EndBlocker(ctx context.Context, k keeper.Keeper, cc *libcons.ConsensusChecker) {
+	fmt.Println("+++ skyway endblocker +++")
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 
 	logger := liblog.FromKeeper(ctx, k).WithComponent("skyway-endblocker")
