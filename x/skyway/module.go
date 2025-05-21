@@ -180,6 +180,7 @@ func (am AppModule) BeginBlock(ctx context.Context) error {
 
 // EndBlock implements app module
 func (am AppModule) EndBlock(ctx context.Context) error {
+	fmt.Println("skyway.AppModule::EndBlock")
 	defer func() {
 		if r := recover(); r != nil {
 			am.keeper.Logger(ctx).Error(fmt.Sprintf("panic in EndBlock: %v", r))
