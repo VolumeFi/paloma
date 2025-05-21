@@ -21,7 +21,10 @@ import (
 
 func logger(ctx context.Context) log.Logger {
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
-	return liblog.FromSDKLogger(sdkCtx.Logger()).With("module", fmt.Sprintf("x/%s", types.ModuleName))
+	return liblog.FromSDKLogger(sdkCtx.Logger()).With(
+		"module", fmt.Sprintf("x/%s", types.ModuleName),
+		"height", sdkCtx.BlockHeight(),
+	)
 }
 
 // HandlerDecorator is an ante decorator wrapper for an ante handler

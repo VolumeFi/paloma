@@ -98,7 +98,10 @@ func NewKeeper(
 
 func (k Keeper) Logger(ctx context.Context) log.Logger {
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
-	return sdkCtx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
+	return liblog.FromSDKLogger(sdkCtx.Logger()).With(
+		"module", fmt.Sprintf("x/%s", types.ModuleName),
+		"height", sdkCtx.BlockHeight(),
+	)
 }
 
 // addExternalChainInfo adds external chain info, such as this conductor's address on outside chains so that

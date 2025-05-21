@@ -92,7 +92,10 @@ func NewKeeper(
 
 func (k Keeper) Logger(ctx context.Context) log.Logger {
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
-	return sdkCtx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
+	return liblog.FromSDKLogger(sdkCtx.Logger().With(
+		"module", fmt.Sprintf("x/%s", types.ModuleName),
+		"height", sdkCtx.BlockHeight(),
+	))
 }
 
 // GetValidatorMetrics returns the metrics for a validator. Will return nil if no metrics found

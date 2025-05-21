@@ -13,6 +13,7 @@ import (
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	xchain "github.com/palomachain/paloma/v2/internal/x-chain"
 	keeperutil "github.com/palomachain/paloma/v2/util/keeper"
+	"github.com/palomachain/paloma/v2/util/liblog"
 	consensustypes "github.com/palomachain/paloma/v2/x/consensus/types"
 	"github.com/palomachain/paloma/v2/x/treasury/types"
 )
@@ -64,7 +65,10 @@ func (k Keeper) ModuleName() string { return types.ModuleName }
 
 func (k Keeper) Logger(ctx context.Context) log.Logger {
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
-	return sdkCtx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
+	return liblog.FromSDKLogger(sdkCtx.Logger()).With(
+		"module", fmt.Sprintf("x/%s", types.ModuleName),
+		"height", sdkCtx.BlockHeight(),
+	)
 }
 
 func (k Keeper) SetCommunityFundFee(ctx context.Context, fee string) error {

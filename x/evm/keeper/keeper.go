@@ -206,7 +206,10 @@ func (k Keeper) PickValidatorForMessage(
 
 func (k Keeper) Logger(ctx context.Context) liblog.Logr {
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
-	return liblog.FromSDKLogger(sdkCtx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName)))
+	return liblog.FromSDKLogger(sdkCtx.Logger().With(
+		"module", fmt.Sprintf("x/%s", types.ModuleName),
+		"height", sdkCtx.BlockHeight(),
+	))
 }
 
 func (k Keeper) ChangeMinOnChainBalance(ctx sdk.Context, chainReferenceID string, balance *big.Int) error {
@@ -682,7 +685,10 @@ type msgSender struct {
 }
 
 func (m msgSender) Logger(ctx sdk.Context) log.Logger {
-	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
+	return liblog.FromSDKLogger(ctx.Logger().With(
+		"module", fmt.Sprintf("x/%s", types.ModuleName),
+		"height", ctx.BlockHeight(),
+	))
 }
 
 func (m msgSender) SendValsetMsgForChain(ctx context.Context, chainInfo *types.ChainInfo, valset types.Valset, assignee, remoteAddr string) error {
