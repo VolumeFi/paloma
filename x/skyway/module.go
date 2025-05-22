@@ -39,6 +39,8 @@ var (
 	_ appmodule.HasEndBlocker    = AppModule{}
 	_ appmodule.HasBeginBlocker  = AppModule{}
 	_ appmodule.AppModule        = AppModule{}
+
+	tCtr int = 0
 )
 
 // AppModuleBasic object for module implementation
@@ -180,7 +182,9 @@ func (am AppModule) BeginBlock(ctx context.Context) error {
 
 // EndBlock implements app module
 func (am AppModule) EndBlock(ctx context.Context) error {
+	tCtr++
 	fmt.Println("skyway.AppModule::EndBlock")
+	fmt.Println(tCtr)
 	defer func() {
 		if r := recover(); r != nil {
 			am.keeper.Logger(ctx).Error(fmt.Sprintf("panic in EndBlock: %v", r))
