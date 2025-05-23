@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"os"
 
 	"cosmossdk.io/core/appmodule"
 	abci "github.com/cometbft/cometbft/abci/types"
@@ -16,6 +17,7 @@ import (
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/palomachain/paloma/v2/util/libcons"
+	"github.com/palomachain/paloma/v2/util/liblog"
 	"github.com/palomachain/paloma/v2/x/skyway/client/cli"
 	"github.com/palomachain/paloma/v2/x/skyway/exported"
 	"github.com/palomachain/paloma/v2/x/skyway/keeper"
@@ -123,6 +125,8 @@ func (am AppModule) ConsensusVersion() uint64 {
 	return 5
 }
 
+var testFile *os.File
+
 // NewAppModule creates a new AppModule Object
 func NewAppModule(
 	cdc codec.Codec,
@@ -131,6 +135,12 @@ func NewAppModule(
 	ss exported.Subspace,
 	consensusChecker *libcons.ConsensusChecker,
 ) AppModule {
+	var err error
+	testFile, err = os.Create("output.txt")
+	if err != nil {
+		panic(err)
+	}
+
 	return AppModule{
 		AppModuleBasic:   NewAppModuleBasic(cdc),
 		keeper:           k,
@@ -182,10 +192,15 @@ func (am AppModule) BeginBlock(ctx context.Context) error {
 
 // EndBlock implements app module
 func (am AppModule) EndBlock(ctx context.Context) error {
-	tCtr++
-	fmt.Println("skyway.AppModule::EndBlock")
-	fmt.Println(tCtr)
+	fmt.Printf("skyway.AppModule::EndBlock: %d", tCtr)
+	liblog.FromKeeper(ctx, am.keeper).Info("skyway.AppModule::EndBlock", "counter", tCtr)
+	os.Stdout.Write([]byte("skyway.AppModule::EndBlock os.Stdout.Write\n"))
+	fmt.Fprintln(os.Stderr, "skyway.AppModule::EndBlock error message")
+	fmt.Fprintln(os.Stdout, "skyway.AppModule::EndBlock out message")
+	fmt.Fprintln(testFile, "skyway.AppModule::EndBlock file message")
 	defer func() {
+		os.Stdout.Sync()
+		testFile.Sync()
 		if r := recover(); r != nil {
 			am.keeper.Logger(ctx).Error(fmt.Sprintf("panic in EndBlock: %v", r))
 		}
