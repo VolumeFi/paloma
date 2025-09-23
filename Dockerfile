@@ -1,7 +1,7 @@
 ###########################
 ####     Base image    ####
 ###########################
-FROM golang:1.23-buster AS base
+FROM golang:1.24.4-bookworm AS base
 
 # TODO add non-root user
 LABEL org.opencontainers.image.authors="christian@volume.finance"
@@ -21,9 +21,10 @@ RUN \
 ####    Local chain setup    ####
 #################################
 FROM ubuntu AS setup-chain-locally
-RUN apt-get update && \
-  apt-get install -y jq
-  OPY --from=builder /palomad /palomad
+RUN apt-get update && apt-get install -y \
+  jq \
+  && rm -rf /var/lib/apt/lists/*
+COPY --from=builder /palomad /palomad
 COPY --from=builder /app/scripts/setup-chain-validator.sh /app/scripts/setup-chain-validator.sh
 RUN PALOMA_CMD="/palomad" /app/scripts/setup-chain-validator.sh
 
